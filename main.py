@@ -1,10 +1,14 @@
 from flask import Flask, jsonify, request, session
+from flask_cors import CORS
 import os
 import requests
 from zenpy import Zenpy, ZenpyException
 
+
 app = Flask(__name__)
 app.secret_key = "super secret key"
+cors = CORS(app, resources={r"*": {"origins": "*"}})
+
 
 ZENPY_CLIENTS = {
 
@@ -66,4 +70,4 @@ def get_zendesk_tickets():
 
 
 if __name__ == '__main__':
-    app.run(host="127.0.0.1", port=8115)
+    app.run(host="127.0.0.1", port=8117)
