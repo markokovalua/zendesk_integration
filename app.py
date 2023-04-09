@@ -1,7 +1,6 @@
 import datetime
 from flask import Flask, jsonify, request, session
 from flask_cors import CORS
-from os.path import join, dirname
 from os import environ
 import requests
 from zenpy import Zenpy, ZenpyException
@@ -25,6 +24,7 @@ REDIRECT_URI = environ.get('REDIRECT_URI')
 
 @app.before_request
 def before_request():
+    # code to keep session data that is used for Zenpy Api accessing available for a year
     session.permanent = True
     app.permanent_session_lifetime = datetime.timedelta(days=365)
 
@@ -55,7 +55,7 @@ def get_zenpy_client(oauth_token):
     return zenpy_client
 
 
-@app.route('/get_zendesk_token')
+@app.route('/get_zendesk_token', methods=['GET'])
 def get_zendesk_token():
     code = request.headers.get("code")
     token_endpoint = f'https://{SUBDOMAIN}.zendesk.com/oauth/tokens'
@@ -75,7 +75,7 @@ def get_zendesk_token():
     return jsonify({"oauth_token": session[code]}), response.status_code
 
 
-@app.route('/get_zendesk_tickets')
+@app.route('/get_zendesk_tickets', methods=['GET'])
 def get_zendesk_tickets():
     # Docs: ZenPy: http://docs.facetoe.com.au/api_objects.html
     code = request.headers.get("code")

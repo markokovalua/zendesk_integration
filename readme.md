@@ -15,3 +15,10 @@ to run flask app:
 4. pip install -r requirements.txt
 5. set .env file variables
 6. run python3 main.py to start flask app
+
+or
+
+install docker to your machine and run using it with a command:
+
+`docker build --tag zendesk-integration . && docker run -d -p 5000:5000 --name zendesk-integration zendesk-integration`
+
