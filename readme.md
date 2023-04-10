@@ -1,11 +1,9 @@
 **zendesk integration implementation**
 
-use GET `/get_zendesk_token` with zendesk oauth `code` passed in headers to obtain `oauth_token`
+use GET `/get_zendesk_token` with zendesk oauth `code` passed in headers to obtain `access_token`
 
-use GET `/get_zendesk_tickets` with zendesk oauth `code` or `oauth_token` for auth passed in headers to obtain 
+use GET `/get_zendesk_tickets` with zendesk oauth `access_token` for passed in headers to obtain 
 zendesk related tickets
-
-on `code` using - `oauth_token` is taken from session on `oauth_token` it will be used `oauth_token` directly
 
 to run flask app:
 
