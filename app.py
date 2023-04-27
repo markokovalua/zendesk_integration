@@ -6,6 +6,7 @@ import requests
 from zenpy import Zenpy, ZenpyException
 from dotenv import load_dotenv
 from secret_manager import SecretsManagerWrapper
+from logger import get_logger
 
 load_dotenv()
 
@@ -21,9 +22,11 @@ CLIENT_SECRET = environ.get('CLIENT_SECRET')
 REDIRECT_URI = environ.get('REDIRECT_URI')
 
 SECRET_MANAGER = SecretsManagerWrapper(
-    project_name = environ.get("GCP_SERVICE_ACC_PATH"),
-    client_path = environ.get("GCP_PROJECT_NAME")
+    project_name=environ.get("GCP_PROJECT_NAME"),
+    client_path=environ.get("GCP_SERVICE_ACC_PATH"),
 )
+
+logger = get_logger()
 
 
 def get_zenpy_client(access_token):
@@ -45,6 +48,7 @@ def get_zenpy_client(access_token):
 
 @app.route('/get_zendesk_token', methods=['GET'])
 def get_zendesk_token():
+    logger.info(f"Test logging for zendesk")
     code = request.headers.get("code")
     token_endpoint = f'https://{SUBDOMAIN}.zendesk.com/oauth/tokens'
     data = {

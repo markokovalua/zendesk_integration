@@ -2,6 +2,7 @@ import json
 from google.cloud import secretmanager
 from google.api_core.exceptions import NotFound
 
+
 # handle gcp credentials
 class SecretsManagerWrapper:
     def __init__(self, project_name, client_path):
