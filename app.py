@@ -5,6 +5,7 @@ from os import environ
 import requests
 from zenpy import Zenpy, ZenpyException
 from dotenv import load_dotenv
+from secret_manager import SecretsManagerWrapper
 
 load_dotenv()
 
@@ -18,6 +19,12 @@ CLIENT_ID = environ.get('CLIENT_ID')
 CLIENT_SECRET = environ.get('CLIENT_SECRET')
 
 REDIRECT_URI = environ.get('REDIRECT_URI')
+
+SECRET_MANAGER = SecretsManagerWrapper(
+    project_name = environ.get("GCP_SERVICE_ACC_PATH"),
+    client_path = environ.get("GCP_PROJECT_NAME")
+)
+
 
 def get_zenpy_client(access_token):
     try:
@@ -52,13 +59,16 @@ def get_zendesk_token():
     tokens = response.json()
     if not response.ok:
         return jsonify({'message': tokens.get('error_description')}), response.status_code
-    return jsonify({"access_token": tokens.get('access_token')}), response.status_code
+    access_token = tokens.get('access_token')
+    SECRET_MANAGER.create_secret(f"zendesk_{code}", access_token)
+    return jsonify({"access_token": access_token}), response.status_code
 
 
 @app.route('/get_zendesk_tickets', methods=['GET'])
 def get_zendesk_tickets():
     # Docs: ZenPy: http://docs.facetoe.com.au/api_objects.html
-    access_token = request.headers.get('access_token')
+    code = request.headers.get("code")
+    access_token = request.headers.get('access_token') or SECRET_MANAGER.get_secret(f"zendesk_{code}")
     zenpy_client = get_zenpy_client(access_token)
     try:
         tickets = [ticket.to_dict() for ticket in zenpy_client.tickets()]
